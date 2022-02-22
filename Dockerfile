@@ -2,6 +2,8 @@
 
 FROM python:3.7-buster
 
+ARG PROJECT=martor_demo
+
 # install nginx
 RUN apt-get update && apt-get install nginx vim -y --no-install-recommends
 COPY nginx.default /etc/nginx/sites-available/default
@@ -11,16 +13,16 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
 # copy source and install dependencies
 RUN mkdir -p /opt/app
 RUN mkdir -p /opt/app/pip_cache
-RUN mkdir -p /opt/app/martor_demo
+RUN mkdir -p /opt/app/${PROJECT}
 COPY requirements.txt start-server.sh /opt/app/
 COPY .pip_cache /opt/app/pip_cache/
-COPY martor_demo /opt/app/martor_demo/
+COPY ${PROJECT} /opt/app/${PROJECT}/
 WORKDIR /opt/app
 RUN pip install -r requirements.txt --cache-dir /opt/app/pip_cache
 
-RUN python ./martor_demo/manage.py makemigrations && \
-    python ./martor_demo/manage.py migrate  && \
-    python ./martor_demo/manage.py collectstatic --no-input
+RUN python ./${PROJECT}/manage.py makemigrations && \
+    python ./${PROJECT}/manage.py migrate  && \
+    python ./${PROJECT}/manage.py collectstatic --no-input
 
 RUN chown -R www-data:www-data /opt/app
 
