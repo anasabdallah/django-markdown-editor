@@ -1,0 +1,15 @@
+version: "3"
+services:
+  # deployment_service
+  deployment:
+    image: "anasabdullah/django-markdown-editor"
+    environment:
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_PASSWORD=admin
+      - DJANGO_SUPERUSER_EMAIL=admin@example.com
+    networks:
+      - overlay
+    ports:
+      - "8020:8020"
+networks:
+  overlay:
